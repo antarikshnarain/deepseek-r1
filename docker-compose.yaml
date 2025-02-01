@@ -1,10 +1,4 @@
 services:
-  mongodb:
-    image: mongo:4.4.6
-    ports:
-      - 27017:27017
-    networks:
-      - chat-ui
   ollama-service:
     image: deepseek-v3:latest
     runtime: nvidia
@@ -12,30 +6,18 @@ services:
       - OLLAMA_ORIGINS="*"
       - NVIDIA_VISIBLE_DEVICES=all
       - NVIDIA_CAPABILITIES=all
-
     ports:
       - 11434:11434
     entrypoint: ["/bin/bash", "/scripts/start_ollama.sh"]
     volumes:
       - ./ollama:/root/.ollama
       - ./scripts:/scripts
-    networks:
-      - chat-ui
-  chat-ui:
-    image: ghcr.io/huggingface/chat-ui-db:latest
-    volumes:
-      - ./db:/data
-      - .env.local:/app/.env.local
-    environment:
-      - MONGODB_URL=mongodb://mongodb:27017
-      - HF_TOKEN=abc
+  ui:
+    image: ghcr.io/open-webui/open-webui:latest
     ports:
-      - 3000:3000
-    depends_on:
-      - mongodb
-    networks:
-      - chat-ui
-
+      - 9783:8080
+    volumes:
+      - ./open-webui:/app/backend/data
 networks:
   chat-ui:
     driver: bridge
