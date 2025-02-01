@@ -2,4 +2,4 @@
 
 ollama serve &
 ollama list
-ollama pull deepseek-r1
+ollama run deepseek-r1
